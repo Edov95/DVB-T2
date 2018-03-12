@@ -16,5 +16,5 @@ parity = B*x;
 parity = cumsum(parity);
 parity = mod(parity,2);
 
-
+u = [x' parity']';
 
