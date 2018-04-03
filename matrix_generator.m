@@ -18,3 +18,5 @@ parity = mod(parity,2);
 
 u = [x' parity']';
 
+save('B_23.mat','B');
+
