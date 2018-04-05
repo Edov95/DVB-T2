@@ -11,14 +11,14 @@ close all;
 
 % CODES PART
 
-R = 2/3; % The codes rates
+R = 37/45; % The codes rates
 % load_matricies(R);
 
-load('B_23.mat','B');
+load('B_56.mat','B');
 [rows,cols] = size(B);
 
 %length of the coded word
-N_ldpc = 64800;
+N_ldpc = 16200;
 
 % K_ldpc = cols
 % Since K rapresent the length of the uncoded word, the numbers of the
@@ -26,14 +26,14 @@ N_ldpc = 64800;
 K_ldpc = cols;
 
 % Inizialization of the encoded and recived words
-d = zeros(1,N_ldpc);
-s = zeros(1,N_ldpc);
-r = zeros(1,N_ldpc);
+d = zeros(N_ldpc,1);
+s = zeros(N_ldpc,1);
+r = zeros(N_ldpc,1);
 
 % Inizialization of the word
 u = zeros(K_ldpc,1);
 
-parity_bits = zeros(1,N_ldpc - K_ldpc);
+parity_bits = zeros(N_ldpc - K_ldpc,1);
 
 % SIGNAL PART
 
@@ -62,6 +62,7 @@ u(find(u < 0.5)) = 0;
 
 parity_bits = B * u;
 parity_bits = cumsum(parity_bits);
+% parity_bits = C * parity_bits;
 parity_bits = mod(parity_bits,2);
 
 d(1:K_ldpc) = u;
@@ -72,17 +73,21 @@ d(K_ldpc + 1:N_ldpc) = parity_bits;
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Map the bits into the signal constellation
-s = bpsk(d);
+% s = bpsk(d);
 
-% Add the channel noise
-r = awgn(s,SNRdB(1));
+% Add the noise
+% r = awgn(s,SNRdB(1));
+r = bsc(s,0.005);
 
-% diff = r - s;
-% size(find(diff ~= 0))
+diff = r - s;
+size(find(diff ~= 0))
 
 %%%%%%%%%%%%
 % 4 DECODE %
 %%%%%%%%%%%%
+
+% calculate the syndrome
+csi = syndrome(r, B, N_ldpc);
 
 % Sono valori decrescenti ed è giusto così perché l'SNR aumenta ma la
 % potenza del segnale rimane costante quindi può solo che diminuire la
@@ -92,8 +97,7 @@ sigma2 = 10.^(1./(10*SNRdB(1)));
 % Inizialize the LLR for soft decoding
 LLR = -2*r/sigma2;
 
-% decode the codeword
-u_hat = decoder(r, LLR, B);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 5 COMPARE THE RESULTS AND PLOTS %

@@ -2,9 +2,9 @@
 
 clear all; close all; clc;
 
-rate = 2/3;
-N_ldpc = 64800;
-K_ldpc = 64800*rate;
+rate = 37/45;
+N_ldpc = 16200;
+K_ldpc = N_ldpc*rate;
 
 x = rand(K_ldpc,1);
 x(find(x >= 0.5)) = 1;
@@ -18,5 +18,5 @@ parity = mod(parity,2);
 
 u = [x' parity']';
 
-save('B_23.mat','B');
+save('B_56.mat','B');
 

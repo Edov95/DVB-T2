@@ -9,7 +9,7 @@ function [B] = generate_B_matrix(rate,N_ldpc)
 
     % Open the related file
     % need to use a switch condition to choose the correct code
-    fid = fopen('./codes/64800/rate_23');
+    fid = fopen('./codes/16200/rate_56');
 
     % Create the systematic matrix
     B = sparse(N_ldpc-K_ldpc,K_ldpc);
@@ -25,7 +25,7 @@ function [B] = generate_B_matrix(rate,N_ldpc)
          x = sscanf(fgetl(fid),'%f');
          for i = 1:360
              B(x + 1, n_block*360 + i) = 1;
-             x = mod(x + i*60, parity_length);
+             x = mod(x + i*8, parity_length);
              %disp(i.');
          end
          n_block = n_block + 1;
