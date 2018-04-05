@@ -8,6 +8,12 @@ close all;
 
 % The steps 1, 2, 3 and 4 must be inserted on a for cycle
 
+
+% CODES PART
+
+R = 2/3; % The codes rates
+% load_matricies(R);
+
 load('B_23.mat','B');
 [rows,cols] = size(B);
 
@@ -28,6 +34,18 @@ r = zeros(1,N_ldpc);
 u = zeros(K_ldpc,1);
 
 parity_bits = zeros(1,N_ldpc - K_ldpc);
+
+% SIGNAL PART
+
+EbN0dBPass = 0.25;          % The pass for the bit SNR
+EbN0dB = 0.5:EbN0dBPass:2;  % The bit SNR test values
+
+SNRdB = EbN0dB + 10*log10(2*R); %The SNR values for the signal
+
+LLR = zeros(1,N_ldpc);
+
+% foreach code
+%   foreach SNR
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 % 1 GENERATE A CODE WORD %
@@ -57,14 +75,29 @@ d(K_ldpc + 1:N_ldpc) = parity_bits;
 s = bpsk(d);
 
 % Add the channel noise
-r = send_over_channel(s);
+r = awgn(s,SNRdB(1));
+
+% diff = r - s;
+% size(find(diff ~= 0))
 
 %%%%%%%%%%%%
 % 4 DECODE %
 %%%%%%%%%%%%
 
+% Sono valori decrescenti ed è giusto così perché l'SNR aumenta ma la
+% potenza del segnale rimane costante quindi può solo che diminuire la
+% potenza dell'errore
+sigma2 = 10.^(1./(10*SNRdB(1)));
 
+% Inizialize the LLR for soft decoding
+LLR = -2*r/sigma2;
+
+% decode the codeword
+u_hat = decoder(r, LLR, B);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 5 COMPARE THE RESULTS AND PLOTS %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
