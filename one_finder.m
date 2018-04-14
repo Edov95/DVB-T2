@@ -2,7 +2,7 @@
 %max_check_degree,check_node_ones,BIGVALUE_COLS,max_variable_degree,variable_node_ones,BIGVALUE_ROWS
 %function [max_check_degree,check_node_ones,BIGVALUE_COLS,max_variable_degree,
 %                                   variable_node_ones,BIGVALUE_ROWS]=one_finder(H)
-function [max_check_degree,check_node_ones,BIGVALUE_COLS,max_variable_degree,variable_node_ones,BIGVALUE_ROWS]=one_finder(H)
+function [max_check_degree,check_node_ones,max_variable_degree,variable_node_ones]=one_finder(H)
 
 % ind=find(H==1);
 [rows,cols]=size(H);
@@ -28,11 +28,7 @@ for rr=1:rows
     check_node_ones(rr,:)=temp;
 end
 
-
-BIGVALUE_COLS=cols+2000;     % value to take place of '0' in check_node_ones: has to be larger than number of columns in H
-check_node_ones(find(check_node_ones==0))=BIGVALUE_COLS; % setting '0' to arbitrary big values
-
-check_node_ones=check_node_ones-1;  %since in C the matrix index starts from '0'
+check_node_ones = check_node_ones - 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -59,7 +55,5 @@ for rr=1:cols
     variable_node_ones(:,rr)=temp;
 end
 
-BIGVALUE_ROWS=rows+2000;  % value to take place of '0' in variable_node_ones: has to be larger than number of rows in H
-variable_node_ones(find(variable_node_ones==0))=BIGVALUE_ROWS;
-variable_node_ones=variable_node_ones-1;     %since in C the matrix index starts from '0'
+variable_node_ones = variable_node_ones - 1;     %since in C the matrix index starts from '0'
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
